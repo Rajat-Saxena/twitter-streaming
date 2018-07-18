@@ -14,10 +14,10 @@ public class TwitterClient
 {
     public static Client run(StatusesFilterEndpoint endpoint, BlockingQueue<String> queue)
     {
-        String consumerKey = "AcfTlGEf4Oo8z0toYrLvXxkvT";
-        String consumerSecret = "WrxCrKnJv36wPo0iQBgcO6s5BvIyi81GViKJ39r1QH5mar5ofG";
-        String token = "88861115-bIdAIbTr6fptyLQY4GPbRZDoKhN0eGbjU9pLL9EXw";
-        String secret = "l1MjJhrkStvtdnYh0tuTds5VszG7p3UfTGvEy5E6Rv7rk";
+        String consumerKey = "";
+        String consumerSecret = "";
+        String token = "";
+        String secret = "";
 
         Authentication auth = new OAuth1(consumerKey, consumerSecret, token, secret);
         Client client = new ClientBuilder().hosts(Constants.STREAM_HOST)
