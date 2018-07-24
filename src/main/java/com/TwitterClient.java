@@ -1,17 +1,13 @@
 package com;
 
-import com.twitter.hbc.ClientBuilder;
-import com.twitter.hbc.core.Client;
-import com.twitter.hbc.core.Constants;
-import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
-import com.twitter.hbc.core.processor.StringDelimitedProcessor;
-import com.twitter.hbc.httpclient.auth.Authentication;
-import com.twitter.hbc.httpclient.auth.OAuth1;
-
-import java.util.concurrent.BlockingQueue;
-
 public class TwitterClient
 {
+<<<<<<< HEAD
+    static String consumerKey = "";
+    static String consumerSecret = "";
+    static String accessToken = "";
+    static String accessTokenSecret = "";
+=======
     public static Client run(StatusesFilterEndpoint endpoint, BlockingQueue<String> queue)
     {
         String consumerKey = "";
@@ -27,4 +23,5 @@ public class TwitterClient
 
         return client;
     }
+>>>>>>> dcd3c75cd87ea6352c4601b2fd7686965d20d33a
 }
