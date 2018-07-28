@@ -92,7 +92,7 @@ public class TwitterProducer {
                     String message = status.getText() + "<<>>" + status.getUser().getScreenName()
                             + "<<>>" + status.getCreatedAt().toString();
                     producer.send(new ProducerRecord<>(topicName, message));
-                    System.out.println("Tweet " + (++tweetCounter) + " sent.");
+                    System.out.println("Tweet " + (++tweetCounter) + " sent by @" + status.getUser());
                 }
             }
         }

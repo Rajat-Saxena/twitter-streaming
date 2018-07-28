@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
 
 public class TwitterConsumer
 {
-    static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+    static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     static HTable hTable;
     static Properties hbaseProperties;
 
@@ -75,7 +75,8 @@ public class TwitterConsumer
 
     public static void processRecordValue(String status) throws IOException
     {
-        try {
+        try
+        {
             System.out.println(status);
 
             String[] tokens = status.split("<<>>");

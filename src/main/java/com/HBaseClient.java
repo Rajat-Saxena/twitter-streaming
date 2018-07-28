@@ -46,6 +46,7 @@ public class HBaseClient
         {
             tableDescriptor = new HTableDescriptor(TableName.valueOf(properties.getProperty("tableName")));
             columnDescriptor = new HColumnDescriptor(Bytes.toBytes(properties.getProperty("columnFamily")));
+            columnDescriptor.setMaxVersions(10);
 
             tableDescriptor.addFamily(columnDescriptor);
             admin.createTable(tableDescriptor);
