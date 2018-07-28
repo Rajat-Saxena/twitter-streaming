@@ -19,6 +19,7 @@ public class TwitterProducer {
         InputStream input = null;
         Producer<String, String> producer = null;
         TwitterStream twitterStream = null;
+        TwitterClient twitterClient = new TwitterClient();
         int tweetCounter = 0;
 
         try {
@@ -30,16 +31,19 @@ public class TwitterProducer {
 
             ConfigurationBuilder cb = new ConfigurationBuilder();
             cb.setDebugEnabled(true);
-            cb.setOAuthConsumerKey(TwitterClient.consumerKey);
-            cb.setOAuthConsumerSecret(TwitterClient.consumerSecret);
-            cb.setOAuthAccessToken(TwitterClient.accessToken);
-            cb.setOAuthAccessTokenSecret(TwitterClient.accessTokenSecret);
+            cb.setOAuthConsumerKey(twitterClient.getConsumerKey());
+            cb.setOAuthConsumerSecret(twitterClient.getConsumerSecret());
+            cb.setOAuthAccessToken(twitterClient.getAccessToken());
+            cb.setOAuthAccessTokenSecret(twitterClient.getAccessTokenSecret());
 
             final LinkedBlockingQueue<Status> queue = new LinkedBlockingQueue<>(1000);
             twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
             StatusListener listener = new StatusListener() {
                 @Override
                 public void onStatus(Status status) {
+                    if (status.getGeoLocation() != null)
+                        System.out.println(status.getGeoLocation().getLatitude() + "," +
+                        status.getGeoLocation().getLongitude());
                     queue.offer(status);
                 }
 
