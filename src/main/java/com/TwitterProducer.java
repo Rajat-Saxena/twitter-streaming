@@ -24,8 +24,8 @@ public class TwitterProducer {
 
         try {
             Properties properties = new Properties();
-            input = new FileInputStream("src/main/resources/producer.properties");
-            properties.load(input);
+            InputStream is = ClassLoader.getSystemResourceAsStream("producer.properties");
+            properties.load(is);
 
             producer = new KafkaProducer<>(properties);
 
@@ -80,7 +80,7 @@ public class TwitterProducer {
             twitterStream.addListener(listener);
             twitterStream.filter(filterQuery);
 
-            while (tweetCounter <= 10)
+            while (true)
             {
                 Status status = queue.poll();
 
@@ -89,7 +89,9 @@ public class TwitterProducer {
                 }
                 else
                 {
-                    producer.send(new ProducerRecord<>(topicName, status.getText()));
+                    String message = status.getText() + "<<>>" + status.getUser().getScreenName()
+                            + "<<>>" + status.getCreatedAt().toString();
+                    producer.send(new ProducerRecord<>(topicName, message));
                     System.out.println("Tweet " + (++tweetCounter) + " sent.");
                 }
             }
