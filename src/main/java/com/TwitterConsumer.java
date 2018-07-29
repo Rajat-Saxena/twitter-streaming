@@ -28,7 +28,7 @@ public class TwitterConsumer
 
     static String topicName;
     static InputStream input;
-    static Consumer<Long, String> consumer;
+    static Consumer<Long, Status> consumer;
     static Properties properties;
     static int counter = 0;
 
@@ -48,15 +48,15 @@ public class TwitterConsumer
     {
         try {
             properties = new Properties();
-            InputStream is = ClassLoader.getSystemResourceAsStream("consumer.properties");
-            properties.load(is);
+            input = ClassLoader.getSystemResourceAsStream("consumer.properties");
+            properties.load(input);
 
             consumer = new KafkaConsumer<>(properties);
             consumer.subscribe(Arrays.asList(topicName));
 
             while (true)
             {
-                ConsumerRecords<Long, String> records = consumer.poll(100);
+                ConsumerRecords<Long, Status> records = consumer.poll(100);
                 records.forEach(record -> {
                     try {
                         processRecordValue(record.value());
@@ -74,16 +74,16 @@ public class TwitterConsumer
         }
     }
 
-    public static void processRecordValue(String status) throws IOException
+    public static void processRecordValue(Status status) throws IOException
     {
         try
         {
-            String[] tokens = status.split("<<>>");
+            /*String[] tokens = status.split("<<>>");
             String text = tokens[0];
             String user = "@" + tokens[1];
-            String createdAt = tokens[2];
+            String createdAt = tokens[2];*/
 
-            System.out.println("Tweet " + (++counter) + " received, by " + user);
+            System.out.print("Tweet " + (++counter) + " received, by " + status.getUser().getScreenName() + " ");
 
             LocalDateTime now = LocalDateTime.now();
             String rowKey = dtf.format(now);
@@ -91,15 +91,31 @@ public class TwitterConsumer
             Put p = new Put(Bytes.toBytes(rowKey));
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                     Bytes.toBytes(hbaseProperties.getProperty("colTweet")),
-                    Bytes.toBytes(text));
+                    //Bytes.toBytes(text));
+                    Bytes.toBytes(status.getText()));
 
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                     Bytes.toBytes(hbaseProperties.getProperty("colHandle")),
-                    Bytes.toBytes(user));
+                    //Bytes.toBytes(user));
+                    Bytes.toBytes(status.getUser().getScreenName()));
 
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                     Bytes.toBytes(hbaseProperties.getProperty("colTimestamp")),
-                    Bytes.toBytes(createdAt));
+                    //Bytes.toBytes(createdAt));
+                    Bytes.toBytes(status.getCreatedAt().toString()));
+
+            if (status.getGeoLocation() != null)
+            {
+                p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
+                        Bytes.toBytes(hbaseProperties.getProperty("colLat")),
+                        Bytes.toBytes(status.getGeoLocation().getLatitude()));
+
+                p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
+                        Bytes.toBytes(hbaseProperties.getProperty("colLong")),
+                        Bytes.toBytes(status.getGeoLocation().getLongitude()));
+
+                System.out.println("with geo-location.");
+            }
 
             hTable.put(p);
         }

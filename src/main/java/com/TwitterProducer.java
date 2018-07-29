@@ -17,7 +17,7 @@ public class TwitterProducer {
     {
         String topicName = "twitter-streaming";
         InputStream input = null;
-        Producer<String, String> producer = null;
+        Producer<String, Status> producer = null;
         TwitterStream twitterStream = null;
         TwitterClient twitterClient = new TwitterClient();
         int tweetCounter = 0;
@@ -93,7 +93,8 @@ public class TwitterProducer {
                 {
                     String message = status.getText() + "<<>>" + status.getUser().getScreenName()
                             + "<<>>" + status.getCreatedAt().toString();
-                    producer.send(new ProducerRecord<>(topicName, message));
+
+                    producer.send(new ProducerRecord<>(topicName, status));
                     System.out.println("Tweet " + (++tweetCounter) + " sent, by @" + status.getUser().getScreenName());
                 }
             }
