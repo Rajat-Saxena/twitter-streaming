@@ -78,12 +78,12 @@ public class TwitterConsumer
     {
         try
         {
-            System.out.print("Tweet " + (++counter) + " received.");
-
             String[] tokens = status.split("<<>>");
             String text = tokens[0];
             String user = "@" + tokens[1];
             String createdAt = tokens[2];
+
+            System.out.println("Tweet " + (++counter) + " received, by " + user);
 
             LocalDateTime now = LocalDateTime.now();
             String rowKey = dtf.format(now);
@@ -102,7 +102,6 @@ public class TwitterConsumer
                     Bytes.toBytes(createdAt));
 
             hTable.put(p);
-            System.out.println("Written to HBase");
         }
         catch (Exception e)
         {
