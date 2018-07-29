@@ -30,6 +30,7 @@ public class TwitterConsumer
     static InputStream input;
     static Consumer<Long, String> consumer;
     static Properties properties;
+    static int counter = 0;
 
     public static void init() throws IOException
     {
@@ -77,7 +78,7 @@ public class TwitterConsumer
     {
         try
         {
-            System.out.println(status);
+            System.out.print("Tweet " + (++counter) + " received.");
 
             String[] tokens = status.split("<<>>");
             String text = tokens[0];
@@ -101,6 +102,7 @@ public class TwitterConsumer
                     Bytes.toBytes(createdAt));
 
             hTable.put(p);
+            System.out.println("Written to HBase");
         }
         catch (Exception e)
         {

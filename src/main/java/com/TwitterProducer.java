@@ -75,7 +75,9 @@ public class TwitterProducer {
 
             FilterQuery filterQuery = new FilterQuery();
             String filterKeywords[] = {"MUFC", "mufc"};
+            String filterLang[] = {"en"};
             filterQuery.track(filterKeywords);
+            filterQuery.language(filterLang);
 
             twitterStream.addListener(listener);
             twitterStream.filter(filterQuery);
@@ -92,7 +94,7 @@ public class TwitterProducer {
                     String message = status.getText() + "<<>>" + status.getUser().getScreenName()
                             + "<<>>" + status.getCreatedAt().toString();
                     producer.send(new ProducerRecord<>(topicName, message));
-                    System.out.println("Tweet " + (++tweetCounter) + " sent by @" + status.getUser());
+                    System.out.println("Tweet " + (++tweetCounter) + " sent by @" + status.getUser().getScreenName());
                 }
             }
         }
