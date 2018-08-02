@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import twitter4j.Status;
+import twitter4j.TwitterObjectFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,10 +16,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class TwitterConsumer
 {
@@ -60,7 +58,7 @@ public class TwitterConsumer
                 records.forEach(record -> {
                     try {
                         processRecordValue(record.value());
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -74,14 +72,13 @@ public class TwitterConsumer
         }
     }
 
-    public static void processRecordValue(Status status) throws IOException
+    public static void processRecordValue(Status status)
     {
         try
         {
-            /*String[] tokens = status.split("<<>>");
-            String text = tokens[0];
-            String user = "@" + tokens[1];
-            String createdAt = tokens[2];*/
+            /*String text = listStatus.get(0);
+            String user = "@" + listStatus.get(1);
+            String createdAt = listStatus.get(2);*/
 
             System.out.print("Tweet " + (++counter) + " received, by " + status.getUser().getScreenName() + " ");
 
@@ -89,6 +86,7 @@ public class TwitterConsumer
             String rowKey = dtf.format(now);
 
             Put p = new Put(Bytes.toBytes(rowKey));
+
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                     Bytes.toBytes(hbaseProperties.getProperty("colTweet")),
                     //Bytes.toBytes(text));
@@ -104,24 +102,25 @@ public class TwitterConsumer
                     //Bytes.toBytes(createdAt));
                     Bytes.toBytes(status.getCreatedAt().toString()));
 
-            if (status.getGeoLocation() != null)
+            /*if (listStatus.size() > 3)
             {
                 p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                         Bytes.toBytes(hbaseProperties.getProperty("colLat")),
-                        Bytes.toBytes(status.getGeoLocation().getLatitude()));
+                        Bytes.toBytes(listStatus.get(3)));
 
                 p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                         Bytes.toBytes(hbaseProperties.getProperty("colLong")),
-                        Bytes.toBytes(status.getGeoLocation().getLongitude()));
+                        Bytes.toBytes(listStatus.get(4)));
 
                 System.out.println("with geo-location.");
-            }
+            }*/
 
             hTable.put(p);
         }
         catch (Exception e)
         {
             System.out.println("Exception occurred.");
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,6 @@
 package com;
 
+import com.google.gson.Gson;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -9,6 +10,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -21,6 +23,7 @@ public class TwitterProducer {
         TwitterStream twitterStream = null;
         TwitterClient twitterClient = new TwitterClient();
         int tweetCounter = 0;
+        ArrayList<String> list;
 
         try {
             Properties properties = new Properties();
@@ -91,8 +94,16 @@ public class TwitterProducer {
                 }
                 else
                 {
-                    String message = status.getText() + "<<>>" + status.getUser().getScreenName()
-                            + "<<>>" + status.getCreatedAt().toString();
+                    /*list = new ArrayList<>();
+                    list.add(status.getText());
+                    list.add(status.getUser().getScreenName());
+                    list.add(status.getCreatedAt().toString());
+
+                    if (status.getGeoLocation() != null)
+                    {
+                        list.add(String.valueOf(status.getGeoLocation().getLatitude()));
+                        list.add(String.valueOf(status.getGeoLocation().getLongitude()));
+                    }*/
 
                     producer.send(new ProducerRecord<>(topicName, status));
                     System.out.println("Tweet " + (++tweetCounter) + " sent, by @" + status.getUser().getScreenName());
