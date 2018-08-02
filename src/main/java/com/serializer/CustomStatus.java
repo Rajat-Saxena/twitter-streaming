@@ -4,7 +4,7 @@ import twitter4j.*;
 
 import java.util.Date;
 
-class CustomStatus {
+public class CustomStatus {
     String text;
 
     Date createdAt;
@@ -68,6 +68,9 @@ class CustomStatus {
     UserMentionEntity[] userMentionEntities;
 
     URLEntity[] URLEntities;
+    HashtagEntity[] hashtagEntities;
+    MediaEntity[] mediaEntities;
+    SymbolEntity[] symbolEntities;
 
     public URLEntity[] getURLEntities() {
         return URLEntities;
@@ -101,14 +104,6 @@ class CustomStatus {
         this.symbolEntities = symbolEntities;
     }
 
-    HashtagEntity[] hashtagEntities;
-
-
-    MediaEntity[] mediaEntities;
-
-
-    SymbolEntity[] symbolEntities;
-
     public UserMentionEntity[] getUserMentionEntities() {
         return userMentionEntities;
     }
@@ -117,243 +112,243 @@ class CustomStatus {
         this.userMentionEntities = userMentionEntities;
     }
 
-    int getAccessLevel() {
+    public int getAccessLevel() {
         return accessLevel;
     }
 
-    void setAccessLevel(int accessLevel) {
+    public void setAccessLevel(int accessLevel) {
         this.accessLevel = accessLevel;
     }
 
-    RateLimitStatus getRateLimitStatus() {
+    public RateLimitStatus getRateLimitStatus() {
         return rateLimitStatus;
     }
 
-    void setRateLimitStatus(RateLimitStatus rateLimitStatus) {
+    public void setRateLimitStatus(RateLimitStatus rateLimitStatus) {
         this.rateLimitStatus = rateLimitStatus;
     }
 
-    String getText() {
+    public String getText() {
         return text;
     }
 
-    void setText(String text) {
+    public void setText(String text) {
         this.text = text;
     }
 
-    Date getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    User getUser() {
+    public User getUser() {
         return user;
     }
 
-    void setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    long getId() {
+    public long getId() {
         return id;
     }
 
-    void setId(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    int getDisplayTextRangeStart() {
+    public int getDisplayTextRangeStart() {
         return displayTextRangeStart;
     }
 
-    void setDisplayTextRangeStart(int displayTextRangeStart) {
+    public void setDisplayTextRangeStart(int displayTextRangeStart) {
         this.displayTextRangeStart = displayTextRangeStart;
     }
 
-    int getDisplayTextRangeEnd() {
+    public int getDisplayTextRangeEnd() {
         return displayTextRangeEnd;
     }
 
-    void setDisplayTextRangeEnd(int displayTextRangeEnd) {
+    public void setDisplayTextRangeEnd(int displayTextRangeEnd) {
         this.displayTextRangeEnd = displayTextRangeEnd;
     }
 
-    String getSource() {
+    public String getSource() {
         return source;
     }
 
-    void setSource(String source) {
+    public void setSource(String source) {
         this.source = source;
     }
 
-    boolean isTruncated() {
+    public boolean isTruncated() {
         return isTruncated;
     }
 
-    void setTruncated(boolean truncated) {
+    public void setTruncated(boolean truncated) {
         isTruncated = truncated;
     }
 
-    long getInReplyToStatusId() {
+    public long getInReplyToStatusId() {
         return inReplyToStatusId;
     }
 
-    void setInReplyToStatusId(long inReplyToStatusId) {
+    public void setInReplyToStatusId(long inReplyToStatusId) {
         this.inReplyToStatusId = inReplyToStatusId;
     }
 
-    long getInReplyToUserId() {
+    public long getInReplyToUserId() {
         return inReplyToUserId;
     }
 
-    void setInReplyToUserId(long inReplyToUserId) {
+    public void setInReplyToUserId(long inReplyToUserId) {
         this.inReplyToUserId = inReplyToUserId;
     }
 
-    String getInReplyToScreenName() {
+    public String getInReplyToScreenName() {
         return inReplyToScreenName;
     }
 
-    void setInReplyToScreenName(String inReplyToScreenName) {
+    public void setInReplyToScreenName(String inReplyToScreenName) {
         this.inReplyToScreenName = inReplyToScreenName;
     }
 
-    GeoLocation getGeoLocation() {
+    public GeoLocation getGeoLocation() {
         return geoLocation;
     }
 
-    void setGeoLocation(GeoLocation geoLocation) {
+    public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
     }
 
-    Place getPlace() {
+    public Place getPlace() {
         return place;
     }
 
-    void setPlace(Place place) {
+    public void setPlace(Place place) {
         this.place = place;
     }
 
-    boolean isFavorited() {
+    public boolean isFavorited() {
         return isFavorited;
     }
 
-    void setFavorited(boolean favorited) {
+    public void setFavorited(boolean favorited) {
         isFavorited = favorited;
     }
 
-    boolean isRetweeted() {
+    public boolean isRetweeted() {
         return isRetweeted;
     }
 
-    void setRetweeted(boolean retweeted) {
+    public void setRetweeted(boolean retweeted) {
         isRetweeted = retweeted;
     }
 
-    int getFavoriteCount() {
+    public int getFavoriteCount() {
         return favoriteCount;
     }
 
-    void setFavoriteCount(int favoriteCount) {
+    public void setFavoriteCount(int favoriteCount) {
         this.favoriteCount = favoriteCount;
     }
 
-    boolean isRetweet() {
+    public boolean isRetweet() {
         return isRetweet;
     }
 
-    void setRetweet(boolean retweet) {
+    public void setRetweet(boolean retweet) {
         isRetweet = retweet;
     }
 
-    Status getRetweetedStatus() {
+    public Status getRetweetedStatus() {
         return retweetedStatus;
     }
 
-    void setRetweetedStatus(Status retweetedStatus) {
+    public void setRetweetedStatus(Status retweetedStatus) {
         this.retweetedStatus = retweetedStatus;
     }
 
-    long[] getContributors() {
+    public long[] getContributors() {
         return contributors;
     }
 
-    void setContributors(long[] contributors) {
+    public void setContributors(long[] contributors) {
         this.contributors = contributors;
     }
 
-    int getRetweetCount() {
+    public int getRetweetCount() {
         return retweetCount;
     }
 
-    void setRetweetCount(int retweetCount) {
+    public void setRetweetCount(int retweetCount) {
         this.retweetCount = retweetCount;
     }
 
-    boolean isRetweetedByMe() {
+    public boolean isRetweetedByMe() {
         return isRetweetedByMe;
     }
 
-    void setRetweetedByMe(boolean retweetedByMe) {
+    public void setRetweetedByMe(boolean retweetedByMe) {
         isRetweetedByMe = retweetedByMe;
     }
 
-    long getCurrentUserRetweetId() {
+    public long getCurrentUserRetweetId() {
         return currentUserRetweetId;
     }
 
-    void setCurrentUserRetweetId(long currentUserRetweetId) {
+    public void setCurrentUserRetweetId(long currentUserRetweetId) {
         this.currentUserRetweetId = currentUserRetweetId;
     }
 
-    boolean isPossiblySensitive() {
+    public boolean isPossiblySensitive() {
         return isPossiblySensitive;
     }
 
-    void setPossiblySensitive(boolean possiblySensitive) {
+    public void setPossiblySensitive(boolean possiblySensitive) {
         isPossiblySensitive = possiblySensitive;
     }
 
-    String getLang() {
+    public String getLang() {
         return lang;
     }
 
-    void setLang(String lang) {
+    public void setLang(String lang) {
         this.lang = lang;
     }
 
-    Scopes getScopes() {
+    public Scopes getScopes() {
         return scopes;
     }
 
-    void setScopes(Scopes scopes) {
+    public void setScopes(Scopes scopes) {
         this.scopes = scopes;
     }
 
-    String[] getWithheldInCountries() {
+    public String[] getWithheldInCountries() {
         return withheldInCountries;
     }
 
-    void setWithheldInCountries(String[] withheldInCountries) {
+    public void setWithheldInCountries(String[] withheldInCountries) {
         this.withheldInCountries = withheldInCountries;
     }
 
-    long getQuotedStatusId() {
+    public long getQuotedStatusId() {
         return quotedStatusId;
     }
 
-    void setQuotedStatusId(long quotedStatusId) {
+    public void setQuotedStatusId(long quotedStatusId) {
         this.quotedStatusId = quotedStatusId;
     }
 
-    Status getQuotedStatus() {
+    public Status getQuotedStatus() {
         return quotedStatus;
     }
 
-    void setQuotedStatus(Status quotedStatus) {
+    public void setQuotedStatus(Status quotedStatus) {
         this.quotedStatus = quotedStatus;
     }
 }

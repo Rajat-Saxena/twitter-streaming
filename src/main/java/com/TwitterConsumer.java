@@ -7,7 +7,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import twitter4j.Status;
 import twitter4j.TwitterObjectFactory;
 
 import java.io.FileInputStream;
@@ -17,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import com.serializer.CustomStatus;
 
 public class TwitterConsumer
 {
@@ -26,7 +26,7 @@ public class TwitterConsumer
 
     static String topicName;
     static InputStream input;
-    static Consumer<Long, Status> consumer;
+    static Consumer<Long, CustomStatus> consumer;
     static Properties properties;
     static int counter = 0;
 
@@ -54,7 +54,7 @@ public class TwitterConsumer
 
             while (true)
             {
-                ConsumerRecords<Long, Status> records = consumer.poll(100);
+                ConsumerRecords<Long, CustomStatus> records = consumer.poll(100);
                 records.forEach(record -> {
                     try {
                         processRecordValue(record.value());
@@ -72,7 +72,7 @@ public class TwitterConsumer
         }
     }
 
-    public static void processRecordValue(Status status)
+    public static void processRecordValue(CustomStatus status)
     {
         try
         {
