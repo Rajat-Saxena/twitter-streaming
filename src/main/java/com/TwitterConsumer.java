@@ -102,8 +102,7 @@ public class TwitterConsumer {
                     Bytes.toBytes(hbaseProperties.getProperty("colLocation")),
                     Bytes.toBytes(location));
 
-            if (jsonObject.has("geoLocation"))
-            {
+            if (jsonObject.has("geoLocation")) {
                 String latitude = jsonObject.getJSONObject("geoLocation").get("latitude").toString();
                 p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                         Bytes.toBytes(hbaseProperties.getProperty("colLat")),
