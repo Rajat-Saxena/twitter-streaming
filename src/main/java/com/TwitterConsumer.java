@@ -113,6 +113,8 @@ public class TwitterConsumer {
                 p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                         Bytes.toBytes(hbaseProperties.getProperty("colLong")),
                         Bytes.toBytes(longitude));
+
+                System.out.print("with geolocation ");
             }
 
             hTable.put(p);

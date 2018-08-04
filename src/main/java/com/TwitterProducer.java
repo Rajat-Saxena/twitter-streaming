@@ -78,6 +78,8 @@ public class TwitterProducer {
             FilterQuery filterQuery = new FilterQuery();
             String filterKeywords[] = {"MUFC", "mufc"};
             String filterLang[] = {"en"};
+            double[][] locations = { {68.116667, 8.066667,}, { 97.416667,37.100000,} };
+            filterQuery.locations(locations);
             filterQuery.track(filterKeywords);
             //filterQuery.language(filterLang);
 
