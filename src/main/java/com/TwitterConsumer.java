@@ -1,37 +1,37 @@
 package com;
 
-import org.apache.hadoop.hbase.HTableDescriptor;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import twitter4j.TwitterObjectFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import com.serializer.CustomStatus;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
 
-public class TwitterConsumer
-{
+public class TwitterConsumer {
     static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     static HTable hTable;
     static Properties hbaseProperties;
 
     static String topicName;
     static InputStream input;
-    static Consumer<Long, CustomStatus> consumer;
+    static Consumer<Long, String> consumer;
     static Properties properties;
     static int counter = 0;
 
-    public static void init() throws IOException
-    {
+    public static void init() throws IOException {
         topicName = "twitter-streaming";
         input = null;
         consumer = null;
@@ -42,8 +42,7 @@ public class TwitterConsumer
         System.out.println("HBase init done.");
     }
 
-    public static void run() throws IOException
-    {
+    public static void run() throws IOException {
         try {
             properties = new Properties();
             input = ClassLoader.getSystemResourceAsStream("consumer.properties");
@@ -52,9 +51,8 @@ public class TwitterConsumer
             consumer = new KafkaConsumer<>(properties);
             consumer.subscribe(Arrays.asList(topicName));
 
-            while (true)
-            {
-                ConsumerRecords<Long, CustomStatus> records = consumer.poll(100);
+            while (true) {
+                ConsumerRecords<Long, String> records = consumer.poll(100);
                 records.forEach(record -> {
                     try {
                         processRecordValue(record.value());
@@ -72,15 +70,16 @@ public class TwitterConsumer
         }
     }
 
-    public static void processRecordValue(CustomStatus status)
-    {
-        try
-        {
-            /*String text = listStatus.get(0);
-            String user = "@" + listStatus.get(1);
-            String createdAt = listStatus.get(2);*/
+    public static void processRecordValue(String jsonMessage) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonMessage);
 
-            System.out.print("Tweet " + (++counter) + " received, by " + status.getUser().getScreenName() + " ");
+            String text = jsonObject.get("text").toString();
+            String user = "@" + jsonObject.getJSONObject("user").get("screenName").toString();
+            String createdAt = jsonObject.get("createdAt").toString();
+            String location = jsonObject.getJSONObject("user").get("location").toString();
+
+            System.out.print("Tweet " + (++counter) + " received, by " + user + " ");
 
             LocalDateTime now = LocalDateTime.now();
             String rowKey = dtf.format(now);
@@ -89,43 +88,43 @@ public class TwitterConsumer
 
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                     Bytes.toBytes(hbaseProperties.getProperty("colTweet")),
-                    //Bytes.toBytes(text));
-                    Bytes.toBytes(status.getText()));
+                    Bytes.toBytes(text));
 
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                     Bytes.toBytes(hbaseProperties.getProperty("colHandle")),
-                    //Bytes.toBytes(user));
-                    Bytes.toBytes(status.getUser().getScreenName()));
+                    Bytes.toBytes(user));
 
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                     Bytes.toBytes(hbaseProperties.getProperty("colTimestamp")),
-                    //Bytes.toBytes(createdAt));
-                    Bytes.toBytes(status.getCreatedAt().toString()));
+                    Bytes.toBytes(createdAt));
 
-            /*if (listStatus.size() > 3)
+            p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
+                    Bytes.toBytes(hbaseProperties.getProperty("colLocation")),
+                    Bytes.toBytes(location));
+
+            if (jsonObject.has("geoLocation"))
             {
+                String latitude = jsonObject.getJSONObject("geoLocation").get("latitude").toString();
                 p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                         Bytes.toBytes(hbaseProperties.getProperty("colLat")),
-                        Bytes.toBytes(listStatus.get(3)));
+                        Bytes.toBytes(latitude));
 
+                String longitude = jsonObject.getJSONObject("geoLocation").get("longitude").toString();
                 p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
                         Bytes.toBytes(hbaseProperties.getProperty("colLong")),
-                        Bytes.toBytes(listStatus.get(4)));
-
-                System.out.println("with geo-location.");
-            }*/
+                        Bytes.toBytes(longitude));
+            }
 
             hTable.put(p);
-        }
-        catch (Exception e)
-        {
+            System.out.println("and written to HBase.");
+
+        } catch (Exception e) {
             System.out.println("Exception occurred.");
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         init();
         run();
     }
