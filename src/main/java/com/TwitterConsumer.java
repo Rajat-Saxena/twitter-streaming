@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class TwitterConsumer {
-    static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH:mm:ss");
     static HTable hTable;
     static Properties hbaseProperties;
 
@@ -82,7 +82,7 @@ public class TwitterConsumer {
             System.out.print("Tweet " + (++counter) + " received, by " + user + " ");
 
             LocalDateTime now = LocalDateTime.now();
-            String rowKey = dtf.format(now);
+            String rowKey = dtf.format(now) + "_" + counter;
 
             Put p = new Put(Bytes.toBytes(rowKey));
 
@@ -95,7 +95,7 @@ public class TwitterConsumer {
                     Bytes.toBytes(user));
 
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),
-                    Bytes.toBytes(hbaseProperties.getProperty("colTimestamp")),
+                    Bytes.toBytes(hbaseProperties.getProperty("colCreatedAt")),
                     Bytes.toBytes(createdAt));
 
             p.addColumn(Bytes.toBytes(hbaseProperties.getProperty("columnFamily")),

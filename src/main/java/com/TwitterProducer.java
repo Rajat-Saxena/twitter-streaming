@@ -46,7 +46,8 @@ public class TwitterProducer {
                 @Override
                 public void onStatus(Status status) {
                     if (status.getUser().getLocation() != null)
-                        queue.offer(status);
+                        //if (status.getPlace().getCountry().equalsIgnoreCase("India"))
+                            queue.offer(status);
                 }
 
                 @Override
@@ -76,10 +77,10 @@ public class TwitterProducer {
             };
 
             FilterQuery filterQuery = new FilterQuery();
-            String filterKeywords[] = {"MUFC", "mufc"};
+            String filterKeywords[] = {"#MUFC", "#mufc"};
             String filterLang[] = {"en"};
             double[][] locations = {{68.116667, 8.066667,}, {97.416667, 37.100000,}};
-            filterQuery.locations(locations);
+            //filterQuery.locations(locations);
             filterQuery.track(filterKeywords);
             //filterQuery.language(filterLang);
 
