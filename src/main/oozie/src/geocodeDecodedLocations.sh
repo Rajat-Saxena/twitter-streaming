@@ -1,5 +1,9 @@
 #!/bin/bash
 
 echo "*********************************************"
-echo "INFO:  Inside geocodeDecodedLocations.sh"
+echo "INFO:  START geocodeDecodedLocations.sh"
+echo "*********************************************"
+
+echo "*********************************************"
+echo "INFO:  END geocodeDecodedLocations.sh"
 echo "*********************************************"
