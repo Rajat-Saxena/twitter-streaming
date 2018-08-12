@@ -4,11 +4,12 @@ echo "*********************************************"
 echo "INFO:  START getDecodedLocations.sh"
 echo "*********************************************"
 
-EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src # ${NAME_NODE}/projects/twitter-streaming/exec
+EXEC_DIR=`pwd`
 DECODED_FILE=${EXEC_DIR}/decoded_locations.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
 
 if [ -f ${DECODED_FILE} ] ; then
+	echo "INFO:  Found ${DECODED_FILE}. Deleting."
     rm ${DECODED_FILE}
 fi
 

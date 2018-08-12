@@ -4,12 +4,13 @@ echo "*********************************************"
 echo "INFO:  START geocodeDecodedLocations.sh"
 echo "*********************************************"
 
-EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src
+EXEC_DIR=`pwd`
 DECODED_FILE=${EXEC_DIR}/decoded_locations.txt
 GEOLOC_FILE=${EXEC_DIR}/geolocations.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
 
 if [ -f ${GEOLOC_FILE} ] ; then
+	echo "INFO:  Found ${GEOLOC_FILE}. Deleting."
     rm ${GEOLOC_FILE}
 fi
 

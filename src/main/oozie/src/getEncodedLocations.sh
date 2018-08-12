@@ -3,7 +3,7 @@ echo "*********************************************"
 echo "INFO:  START getEncodedLocations.sh"
 echo "*********************************************"
 
-EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src
+EXEC_DIR=`pwd`
 LAST_ROWKEY_FILE=${EXEC_DIR}/last_rowkey.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
 
