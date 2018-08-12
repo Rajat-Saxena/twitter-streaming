@@ -51,7 +51,7 @@
 	    <file>${GEOCODE_LOCATIONS}</file>
 	  </shell>
 		
-      <ok to = "updateViz" />
+      <ok to = "end" />
       <error to = "kill_job" />
    </action>
    
