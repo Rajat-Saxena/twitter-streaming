@@ -8,6 +8,10 @@ EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src # ${NAME_NODE}/
 DECODED_FILE=${EXEC_DIR}/decoded_locations.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
 
+if [ -f ${DECODED_FILE} ] ; then
+    rm ${DECODED_FILE}
+fi
+
 for line in `cat ${EXEC_DIR}/encoded_locations.txt`; do
         line=$(echo $line| sed 's/\"//g')
         val=`echo -n $line | base64 -d`

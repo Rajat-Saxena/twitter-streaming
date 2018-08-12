@@ -3,20 +3,12 @@ echo "*********************************************"
 echo "INFO:  START getEncodedLocations.sh"
 echo "*********************************************"
 
-NAME_NODE=hdfs://localhost:8020
-EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src # ${NAME_NODE}/projects/twitter-streaming/exec
+EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src
 LAST_ROWKEY_FILE=${EXEC_DIR}/last_rowkey.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
 
 echo "INFO:  Calculate partial rowkey"
 ROWKEY_DIR=${EXEC_DIR}/last_rowkey_dir
-
-#if [ hadoop fs -test -e ${LAST_ROWKEY_FILE} ]; then
-#	echo "INFO:  Last rowkey file found."
-#	LAST_ROWKEY=`cat ${LAST_ROWKEY_FILE}`
-#else
-#	LAST_ROWKEY=`date`
-#fi
 
 LAST_ROWKEY=`cat ${LAST_ROWKEY_FILE}`
 echo "INFO:  Last rowkey: ${LAST_ROWKEY} "
@@ -39,7 +31,7 @@ ROWKEY_END=${DATE}_${TIME_HOUR_END}:${TIME_MIN_END}:${TIME_SEC_END}_0
 echo "INFO:  New rowkey end: ${ROWKEY_END} "
 
 echo "INFO:  Fetch locations from HBase in Json format"
-curl -X GET localhost:8070/twitter-streaming-tbl/${ROWKEY_NEW},${ROWKEY_END}/tweet-data:location -H "Accept: application/json" > ${EXEC_DIR}/location_tmp.json # | hadoop fs -appendToFile - ${EXEC_DIR}/location_tmp.json #
+curl -X GET localhost:8070/twitter-streaming-tbl/${ROWKEY_NEW},${ROWKEY_END}/tweet-data:location -H "Accept: application/json" > ${EXEC_DIR}/location_tmp.json
 
 echo "INFO:  Filter out encoded locations from Json file"
 jq '.Row[].Cell[]."$"' ${EXEC_DIR}/location_tmp.json > ${EXEC_DIR}/encoded_locations.txt

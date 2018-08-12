@@ -4,11 +4,14 @@ echo "*********************************************"
 echo "INFO:  START geocodeDecodedLocations.sh"
 echo "*********************************************"
 
-NAME_NODE=hdfs://localhost:8020
-EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src  #${NAME_NODE}/projects/twitter-streaming/exec
+EXEC_DIR=/media/sf_Git-Repo/twitter-streaming/src/main/oozie/src
 DECODED_FILE=${EXEC_DIR}/decoded_locations.txt
 GEOLOC_FILE=${EXEC_DIR}/geolocations.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
+
+if [ -f ${GEOLOC_FILE} ] ; then
+    rm ${GEOLOC_FILE}
+fi
 
 cat ${DECODED_FILE} | while read location; do
         location=${location// /"%20"}
