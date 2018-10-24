@@ -17,9 +17,10 @@ fi
 cat ${DECODED_FILE} | while read location; do
         location=${location// /"%20"}
 		echo "INFO:  Geocoding for $location "
-        result_json=`curl https://nominatim.openstreetmap.org/search/${location}?format=json&addressdetails=1&limit=1`
-        geoloc=`echo $result_json | jq '.[0]."lat", .[0]."lon"'`
-        geoloc=`echo $geoloc | sed 's/\n/ /g; s/\"//g; s/ /,/g'`
+        result_json=`curl -X GET "https://nominatim.openstreetmap.org/search/${location}?format=json&addressdetails=1&limit=1"`
+        geoloc=`echo $result_json | jq '.[0]."address"."country"'`
+		#geoloc=`echo $result_json | jq '.[0]."lat", .[0]."lon"'`
+        geoloc=`echo $geoloc | sed 's/"//g'`
         echo $geoloc >> ${GEOLOC_FILE}
 done 
 
