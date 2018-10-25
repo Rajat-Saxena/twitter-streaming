@@ -1,4 +1,4 @@
-<workflow-app xmlns = "uri:oozie:workflow:0.4" name = "twitter-streaming-workflow">
+<workflow-app xmlns = "uri:oozie:workflow:0.4" name = "locations-workflow">
    <start to = "getEncodedLocations" />
 
    <action name = "getEncodedLocations">
@@ -11,7 +11,7 @@
                     <value>${QUEUE_NAME}</value>
                 </property>
             </configuration>
-            <exec>getEncodedLocations.sh</exec>
+            <exec>${EXE_ENCODED_LOCATIONS}</exec>
 	    <file>${ENCODED_LOCATIONS}</file>
 	  </shell>
 		
@@ -29,7 +29,7 @@
                     <value>${QUEUE_NAME}</value>
                 </property>
             </configuration>
-            <exec>getDecodedLocations.sh</exec>
+            <exec>${EXE_DECODED_LOCATIONS}</exec>
 	    <file>${DECODED_LOCATIONS}</file>
 	  </shell>
 		
@@ -47,25 +47,7 @@
                     <value>${QUEUE_NAME}</value>
                 </property>
             </configuration>
-            <exec>geocodeDecodedLocations.sh</exec>
-	    <file>${GEOCODE_LOCATIONS}</file>
-	  </shell>
-		
-      <ok to = "end" />
-      <error to = "kill_job" />
-   </action>
-   
-   <action name = "updateViz">
-      <shell xmlns="uri:oozie:shell-action:0.1">
-            <job-tracker>${JOB_TRACKER}</job-tracker>
-            <name-node>${NAME_NODE}</name-node>
-            <configuration>
-                <property>
-                    <name>mapred.job.queue.name</name>
-                    <value>${QUEUE_NAME}</value>
-                </property>
-            </configuration>
-            <exec>geocodeDecodedLocations.sh</exec>
+            <exec>${EXE_GEOCODE_LOCATIONS}</exec>
 	    <file>${GEOCODE_LOCATIONS}</file>
 	  </shell>
 		

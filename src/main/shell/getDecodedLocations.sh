@@ -4,7 +4,7 @@ echo "*********************************************"
 echo "INFO:  START getDecodedLocations.sh"
 echo "*********************************************"
 
-EXEC_DIR=`pwd`
+EXEC_DIR=/home/cloudera/Desktop/locations
 DECODED_FILE=${EXEC_DIR}/decoded_locations.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
 
@@ -24,5 +24,3 @@ echo "INFO:  Decoded locations saved to ${DECODED_FILE}"
 echo "*********************************************"
 echo "INFO:  END getDecodedLocations.sh"
 echo "*********************************************"
-
-sh geocodeDecodedLocations.sh

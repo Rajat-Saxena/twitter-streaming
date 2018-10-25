@@ -1,9 +1,10 @@
+#!/bin/bash
 
 echo "*********************************************"
 echo "INFO:  START getEncodedLocations.sh"
 echo "*********************************************"
 
-EXEC_DIR=`pwd`
+EXEC_DIR=/home/cloudera/Desktop/locations
 LAST_ROWKEY_FILE=${EXEC_DIR}/last_rowkey.txt
 echo "INFO:  Exec Directory: ${EXEC_DIR} "
 
@@ -49,6 +50,3 @@ rm ${EXEC_DIR}/location_tmp.json
 echo "*********************************************"
 echo "INFO:  END getEncodedLocations.sh"
 echo "*********************************************"
-
-
-sh getDecodedLocations.sh
