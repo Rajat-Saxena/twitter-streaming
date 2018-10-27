@@ -15,7 +15,9 @@ public class Main
             else if (args[0].equalsIgnoreCase("consumer"))
                 TwitterConsumer.main(args);
             else
-                System.out.println("Invalid parameter.");
+                System.out.println("Invalid parameter: " + args[0] + ".");
         }
+        else
+            System.out.println("A parameter needs to be specified. Valid parameters - producer, consumer");
     }
 }

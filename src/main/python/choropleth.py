@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import random
 import pandas
 import folium
@@ -6,28 +5,44 @@ from branca.colormap import LinearColormap
 import json
 import pycountry
 import time
+import operator
+import os
+import glob
 
-def update_map_dict():
+def update_map_dict(old_timestamp):
     try:
-        geolocations = '/home/cloudera/Desktop/locations/geolocations.txt' #'D:\\Git-Repo\\twitter-streaming\\src\\main\\oozie\\src\\geolocations.txt'
-        with open(geolocations, 'r') as geofile:
-            content = geofile.read().splitlines()
-            for code in content:
-                if code == 'null' or code == '':
-                    pass
-                else:
-                    ccode = pycountry.countries.get(alpha_2=code.upper()).alpha_3
-                    if ccode not in map_dict:
-                        #print("ccode " + ccode + " not present in dictionary. Adding.")
-                        map_dict[ccode] = 1
+        geolocations = '/home/cloudera/Desktop/locations/geolocations.txt'
+        avail_files = glob.glob('/home/cloudera/Desktop/locations/geolocations.txt_*_*')
+        current_timestamp = os.stat(geolocations).st_mtime_ns
+        #old_timestamp=1
+
+        print('Orig:' + str(old_timestamp))
+        print('Current:' + str(current_timestamp))
+
+        if current_timestamp != old_timestamp:
+            print('Found new file. Updating map.')
+            old_timestamp = current_timestamp
+            with open(geolocations, 'r') as geofile:
+                content = geofile.read().splitlines()
+                for code in content:
+                    if code == 'null' or code == '':
+                        pass
                     else:
-                        #print("ccode " + ccode + " present in dictionary. Updating.")
-                        map_dict[ccode] = map_dict.get(ccode) + 1
+                        ccode = pycountry.countries.get(alpha_2=code.upper()).alpha_3
+                        if ccode not in map_dict:
+                            #print("ccode " + ccode + " not present in dictionary. Adding.")
+                            map_dict[ccode] = 1
+                        else:
+                            #print("ccode " + ccode + " present in dictionary. Updating.")
+                            map_dict[ccode] = map_dict.get(ccode) + 1
+        else:
+            print('Same file. Not updating map.')
     except:
         pass
 
-    print(map_dict)
-    return LinearColormap(['yellow','red'], vmin = min(map_dict.values()), vmax = max(map_dict.values()))
+    sorted_map_list = sorted(map_dict.items(), key=operator.itemgetter(1), reverse=True)
+    print(sorted_map_list[:10])
+    return old_timestamp
 
 def get_color(feature):
     value = map_dict.get(feature['properties']['A3'])
@@ -38,14 +53,15 @@ def get_color(feature):
 
 all_codes = pandas.read_csv('https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv')
 map_dict = {}
+old_timestamp = 100
+sorted_map_list = []
+processed_files = []
 
 for code in all_codes['alpha-3']:
-    map_dict[code] = 1
+    map_dict[code] = 0
 
 while True:
-    print("Starting iteration")
-    color_scale = update_map_dict()
-    print("Colors min: " + str(color_scale.vmin) + " Colors max: " + str(color_scale.vmax))
+    old_timestamp = update_map_dict(old_timestamp)
     countries_geo = 'countries-land.json'
 
     m = folium.Map(
@@ -64,6 +80,6 @@ while True:
               legend_name = 'Number of Tweets per Country')
 
 
-    m.save('choropleth.html')
+    m.save('/media/sf_Git-Repo/twitter-streaming/out/choropleth.html') #/media/sf_Git-Repo/twitter-streaming/out/choropleth.html
     print("Map updated.")
-    time.sleep(15)
+    time.sleep(60)
