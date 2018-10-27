@@ -8,41 +8,45 @@ import time
 import operator
 import os
 import glob
+import sys
 
-def update_map_dict(old_timestamp):
+def print_top_n_countries(sorted_map_list, N):
+    top_N = sorted_map_list[:N]
+    for key, val in top_N:
+        print(key + ": " + str(val))
+
+def update_map_dict():
     try:
-        geolocations = '/home/cloudera/Desktop/locations/geolocations.txt'
-        avail_files = glob.glob('/home/cloudera/Desktop/locations/geolocations.txt_*_*')
-        current_timestamp = os.stat(geolocations).st_mtime_ns
-        #old_timestamp=1
+        avail_files = glob.glob('/home/cloudera/Desktop/locations/geolocations_*_*.txt')
 
-        print('Orig:' + str(old_timestamp))
-        print('Current:' + str(current_timestamp))
-
-        if current_timestamp != old_timestamp:
-            print('Found new file. Updating map.')
-            old_timestamp = current_timestamp
-            with open(geolocations, 'r') as geofile:
-                content = geofile.read().splitlines()
-                for code in content:
-                    if code == 'null' or code == '':
-                        pass
-                    else:
-                        ccode = pycountry.countries.get(alpha_2=code.upper()).alpha_3
-                        if ccode not in map_dict:
-                            #print("ccode " + ccode + " not present in dictionary. Adding.")
-                            map_dict[ccode] = 1
-                        else:
-                            #print("ccode " + ccode + " present in dictionary. Updating.")
-                            map_dict[ccode] = map_dict.get(ccode) + 1
+        if len(avail_files) == len(processed_files):
+            idle_counter = idle_counter + 1
+            print('Not found any new file for ' + idle_counter + ' minute(s).')
+            if idle_counter == 10:
+                sys.exit()
         else:
-            print('Same file. Not updating map.')
+            for available_file in avail_files:
+                if available_file not in processed_files:
+                    geolocations = available_file
+                    print('\nFound new file: ' + geolocations)
+                    processed_files.append(available_file)
+
+                    with open(geolocations, 'r') as geofile:
+                        content = geofile.read().splitlines()
+                        for code in content:
+                            if code == 'null' or code == '':
+                                pass
+                            else:
+                                ccode = pycountry.countries.get(alpha_2=code.upper()).alpha_3
+                                if ccode not in map_dict:
+                                    map_dict[ccode] = 1
+                                else:
+                                    map_dict[ccode] = map_dict.get(ccode) + 1
     except:
         pass
 
     sorted_map_list = sorted(map_dict.items(), key=operator.itemgetter(1), reverse=True)
-    print(sorted_map_list[:10])
-    return old_timestamp
+    print_top_n_countries(sorted_map_list, 10)
 
 def get_color(feature):
     value = map_dict.get(feature['properties']['A3'])
@@ -53,15 +57,15 @@ def get_color(feature):
 
 all_codes = pandas.read_csv('https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv')
 map_dict = {}
-old_timestamp = 100
 sorted_map_list = []
 processed_files = []
+idle_counter = 0
 
 for code in all_codes['alpha-3']:
     map_dict[code] = 0
 
 while True:
-    old_timestamp = update_map_dict(old_timestamp)
+    update_map_dict()
     countries_geo = 'countries-land.json'
 
     m = folium.Map(
@@ -81,5 +85,5 @@ while True:
 
 
     m.save('/media/sf_Git-Repo/twitter-streaming/out/choropleth.html') #/media/sf_Git-Repo/twitter-streaming/out/choropleth.html
-    print("Map updated.")
-    time.sleep(60)
+    print("\n")
+    time.sleep(10)
