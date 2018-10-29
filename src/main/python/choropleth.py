@@ -18,16 +18,17 @@ def print_top_n_countries(sorted_map_list, N):
 
 def update_map_dict():
     try:
+        global idle_counter
         avail_files = glob.glob('/home/cloudera/Desktop/locations/geolocations_*_*.txt')
 
         if len(avail_files) == len(processed_files):
-            global idle_counter
             idle_counter = idle_counter + 1
             print('Not found any new file for ' + str(idle_counter) + ' minute(s).')
             if idle_counter == 10:
                 print('EXITING APPLICATION.')
                 sys.exit()
         else:
+            idle_counter = 0
             for available_file in avail_files:
                 if available_file not in processed_files:
                     geolocations = available_file
