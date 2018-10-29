@@ -24,12 +24,9 @@ def update_map_dict():
             global idle_counter
             idle_counter = idle_counter + 1
             print('Not found any new file for ' + str(idle_counter) + ' minute(s).')
-            if idle_counter == 3:
+            if idle_counter == 10:
                 print('EXITING APPLICATION.')
-                exit()
                 sys.exit()
-                quit()
-                os._exit(0)
         else:
             for available_file in avail_files:
                 if available_file not in processed_files:
@@ -92,4 +89,4 @@ while True:
 
     m.save('/media/sf_Git-Repo/twitter-streaming/out/choropleth.html') #/media/sf_Git-Repo/twitter-streaming/out/choropleth.html
     print("\n")
-    time.sleep(5)
+    time.sleep(60)
