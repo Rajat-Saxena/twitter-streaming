@@ -12,18 +12,24 @@ import sys
 
 def print_top_n_countries(sorted_map_list, N):
     top_N = sorted_map_list[:N]
+    print('Top countries:')
     for key, val in top_N:
-        print(key + ": " + str(val))
+        print(key + ":" + str(val) + " ", end = '')
 
 def update_map_dict():
     try:
         avail_files = glob.glob('/home/cloudera/Desktop/locations/geolocations_*_*.txt')
 
         if len(avail_files) == len(processed_files):
+            global idle_counter
             idle_counter = idle_counter + 1
-            print('Not found any new file for ' + idle_counter + ' minute(s).')
-            if idle_counter == 10:
+            print('Not found any new file for ' + str(idle_counter) + ' minute(s).')
+            if idle_counter == 3:
+                print('EXITING APPLICATION.')
+                exit()
                 sys.exit()
+                quit()
+                os._exit(0)
         else:
             for available_file in avail_files:
                 if available_file not in processed_files:
@@ -86,4 +92,4 @@ while True:
 
     m.save('/media/sf_Git-Repo/twitter-streaming/out/choropleth.html') #/media/sf_Git-Repo/twitter-streaming/out/choropleth.html
     print("\n")
-    time.sleep(10)
+    time.sleep(5)
