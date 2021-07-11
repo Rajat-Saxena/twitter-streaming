@@ -1,5 +1,4 @@
 #!/bin/bash
 
 # Start Producer
-cd /media/sf_Git-Repo/twitter-streaming/target
-java -cp twitter-streaming-1.0-SNAPSHOT-jar-with-dependencies.jar com.Main producer
+java -cp target\twitter-streaming-2.0-shaded.jar com.twitter_streaming.Main producer

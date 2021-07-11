@@ -68,14 +68,13 @@ public class TwitterProducer {
             twitterStream.addListener(listener);
             twitterStream.filter(filterQuery);
 
-            while (tweetCounter < 5) {
+            while (true) {
                 Status status = queue.poll();
 
                 if (status == null) {
                     Thread.sleep(100);
                 } else {
                     String jsonStatus = gson.toJson(status);
-                    System.out.println(jsonStatus);
                     producer.send(new ProducerRecord<>(topicName, jsonStatus));
                     System.out.println("Tweet " + (++tweetCounter) + " sent, by @" + status.getUser().getScreenName());
                 }
