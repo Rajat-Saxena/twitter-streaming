@@ -1,6 +1,5 @@
 package com.twitter_streaming;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,7 +14,10 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class TwitterConsumer {
     static DateTimeFormatter tweetDttmFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm:ss a");
@@ -75,8 +77,25 @@ public class TwitterConsumer {
             String place_url = jsonObject.getAsJsonObject("place").get("url").getAsString();
             String place_full_name = jsonObject.getAsJsonObject("place").get("fullName").getAsString();
             String place_bounding_box_type = jsonObject.getAsJsonObject("place").get("boundingBoxType").getAsString();
-            JsonArray place_bounding_box_coordinates = jsonObject.getAsJsonObject("place").get("boundingBoxCoordinates").getAsJsonArray();
             String place_id = jsonObject.getAsJsonObject("place").get("id").getAsString();
+
+            List<double[]> bboxCoordinates = new ArrayList<>();
+            Iterator<JsonElement> elementIterator = jsonObject.getAsJsonObject("place").get("boundingBoxCoordinates").getAsJsonArray().get(0).getAsJsonArray().iterator();
+            while (elementIterator.hasNext()) {
+                JsonElement obj = elementIterator.next();
+                double latitude = ((JsonObject) obj).get("latitude").getAsDouble();
+                double longitude = ((JsonObject) obj).get("longitude").getAsDouble();
+                double[] coord = new double[]{latitude, longitude};
+                bboxCoordinates.add(coord);
+            }
+            double place_bounding_box_lat_0 = bboxCoordinates.get(0)[0];
+            double place_bounding_box_lat_1 = bboxCoordinates.get(1)[0];
+            double place_bounding_box_lat_2 = bboxCoordinates.get(2)[0];
+            double place_bounding_box_lat_3 = bboxCoordinates.get(3)[0];
+            double place_bounding_box_long_0 = bboxCoordinates.get(0)[1];
+            double place_bounding_box_long_1 = bboxCoordinates.get(1)[1];
+            double place_bounding_box_long_2 = bboxCoordinates.get(2)[1];
+            double place_bounding_box_long_3 = bboxCoordinates.get(3)[1];
 
             Statement stmt = mySqlConnection.createStatement();
             String sql = "INSERT INTO twitter_streaming VALUES ("
@@ -91,7 +110,14 @@ public class TwitterConsumer {
                     + "'" + place_url + "',"
                     + "'" + place_full_name + "',"
                     + "'" + place_bounding_box_type + "',"
-                    + "'" + " " + "',"
+                    + place_bounding_box_lat_0 + ","
+                    + place_bounding_box_long_0 + ","
+                    + place_bounding_box_lat_1 + ","
+                    + place_bounding_box_long_1 + ","
+                    + place_bounding_box_lat_2 + ","
+                    + place_bounding_box_long_2 + ","
+                    + place_bounding_box_lat_3 + ","
+                    + place_bounding_box_long_3 + ","
                     + "'" + place_id + "'"
                     + ")";
 
