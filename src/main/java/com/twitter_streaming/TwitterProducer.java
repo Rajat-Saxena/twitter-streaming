@@ -1,53 +1,39 @@
-package com;
+package com.twitter_streaming;
 
 import com.google.gson.Gson;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import twitter4j.*;
-import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.json.DataObjectFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TwitterProducer {
-    public static void run() throws IOException {
-        String topicName = "twitter-streaming";
-        InputStream input = null;
-        Producer<String, String> producer = null;
-        TwitterStream twitterStream = null;
-        TwitterClient twitterClient = new TwitterClient();
-        Gson gson = new Gson();
 
-        int tweetCounter = 0;
+    static TwitterStream twitterStream;
+    static Gson gson;
+    static int tweetCounter;
+    static Producer producer;
+    static String topicName;
+
+    public static void init() throws IOException {
+        twitterStream = Utils.getTwitterStream();
+        gson = new Gson();
+        tweetCounter = 0;
+        producer = Utils.getProducer();
+        topicName = Utils.getKafkaTopic();
+    }
+
+    public static void run() {
 
         try {
-            Properties properties = new Properties();
-            InputStream is = ClassLoader.getSystemResourceAsStream("producer.properties");
-            properties.load(is);
-
-            producer = new KafkaProducer<>(properties);
-
-            ConfigurationBuilder cb = new ConfigurationBuilder();
-            cb.setDebugEnabled(true);
-            cb.setOAuthConsumerKey(twitterClient.getConsumerKey());
-            cb.setOAuthConsumerSecret(twitterClient.getConsumerSecret());
-            cb.setOAuthAccessToken(twitterClient.getAccessToken());
-            cb.setOAuthAccessTokenSecret(twitterClient.getAccessTokenSecret());
-            cb.setJSONStoreEnabled(true);
 
             final LinkedBlockingQueue<Status> queue = new LinkedBlockingQueue<>(1000);
-            twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
             StatusListener listener = new StatusListener() {
                 @Override
                 public void onStatus(Status status) {
-                    if (status.getUser().getLocation() != null)
-                        //if (status.getPlace().getCountry().equalsIgnoreCase("India"))
-                            queue.offer(status);
+                    if (status.getPlace() != null)
+                        queue.offer(status);
                 }
 
                 @Override
@@ -77,24 +63,19 @@ public class TwitterProducer {
             };
 
             FilterQuery filterQuery = new FilterQuery();
-            String filterKeywords[] = {"#MUFC", "#mufc"};
-            String filterLang[] = {"en"};
             double[][] locations = {{68.116667, 8.066667,}, {97.416667, 37.100000,}};
-            //filterQuery.locations(locations);
-            filterQuery.track(filterKeywords);
-            //filterQuery.language(filterLang);
-
+            filterQuery.locations(locations);
             twitterStream.addListener(listener);
             twitterStream.filter(filterQuery);
 
-            while (true) {
+            while (tweetCounter < 5) {
                 Status status = queue.poll();
 
                 if (status == null) {
                     Thread.sleep(100);
                 } else {
                     String jsonStatus = gson.toJson(status);
-
+                    System.out.println(jsonStatus);
                     producer.send(new ProducerRecord<>(topicName, jsonStatus));
                     System.out.println("Tweet " + (++tweetCounter) + " sent, by @" + status.getUser().getScreenName());
                 }
@@ -104,12 +85,12 @@ public class TwitterProducer {
         } finally {
             producer.close();
             twitterStream.shutdown();
-            input.close();
         }
     }
 
 
     public static void main(String[] args) throws IOException {
-        TwitterProducer.run();
+        init();
+        run();
     }
 }
